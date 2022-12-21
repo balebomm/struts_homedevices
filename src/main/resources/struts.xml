@@ -7,46 +7,48 @@
 
 	<constant name="struts.devMode" value="false" />
 
-	<package name="structdefault" extends="struts-default">
+	<package name="structdefault" extends="struts-default" strict-method-invocation="false">
+		<interceptors>
+			<interceptor class="com.github.balebomm.struts_homedevice.Interceptor.AuthenticatedInterceptor" name="authenticatedInterceptor">
+			</interceptor>
+
+			<interceptor class="com.github.balebomm.struts_homedevice.Interceptor.RoleInterceptor" name="roleBasedInterceptor"/>
+			<interceptor-stack name="roleBasedDefaultInterceptor">
+				<interceptor-ref name="params"/>
+				<interceptor-ref name="roleBasedInterceptor" />                
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- Post login -->
+		<action name="post-login" class="com.github.balebomm.struts_homedevice.Actions.NguoiDungAction" method="login">
+			<result name="fail">/WEB-INF/layouts/login.jsp</result>
+			<result name="admin" type="redirect">view-home</result>
+			<result name="khach" type="redirect">view-home</result>
+		</action>
+
 		<action name="">
-			<result>/request.jsp</result>
+			<interceptor-ref name="authenticatedInterceptor"/>
+			<result name="*" type="redirect">view-home</result>
 		</action>
 
-		<action name="request" class="com.empresa.struts.actions.RequestAction"
-			method="execute">
-			<result name="success">/request.jsp</result>
+		<!-- View home -->
+		<action name="view-home">
+			<interceptor-ref name="authenticatedInterceptor"/>
+			<result name="interceptor-fail">/WEB-INF/layouts/login.jsp</result>
+			<result name="interceptor-admin">/WEB-INF/layouts/admin/home.jsp</result>
+			<result name="interceptor-khach">/WEB-INF/layouts/khach/home.jsp</result>
 		</action>
 
-		<action name="saverequest" class="com.empresa.struts.actions.RequestAction"
-			method="execute">
-			<result name="success">/listrequest.jsp</result>
-			<result name="input">/request.jsp</result>
-		</action>
-	</package>
+		<!-- ThietBiAction -->
+		<action name="thietbi-*" class="com.github.balebomm.struts_homedevice.Actions.ThietBiAction" method="{1}">
+			<interceptor-ref name="params"/>
+			<interceptor-ref name="roleBasedInterceptor">
+				<param name="allowedRoles">admin</param>
+			</interceptor-ref>
 
-	<package name="jsondefault" extends="json-default">
-		<action name="listrequest" class="com.empresa.struts.actions.ListRequestAction"
-			method="execute">
-			<result type="json">
-				<param name="excludeNullProperties">true</param>
-				<param name="noCache">true</param>
-			</result>
-		</action>
-
-		<action name="listcountries" class="com.empresa.struts.actions.ListCountryAction"
-			method="execute">
-			<result type="json">
-				<param name="excludeNullProperties">true</param>
-				<param name="noCache">true</param>
-			</result>
-		</action>
-
-		<action name="listinstitutions" class="com.empresa.struts.actions.ListCountryAction"
-			method="executeGetInstitutions">
-			<result type="json">
-				<param name="excludeNullProperties">true</param>
-				<param name="noCache">true</param>
-			</result>
+			<result name="interceptor-fail">/WEB-INF/layouts/login.jsp</result>
+			<result name="action-success">/WEB-INF/layouts/admin/thietbi/{1}.jsp</result>
+			<result name="action-list" type="redirect">thietbi-list</result>
 		</action>
 	</package>
 </struts>
