@@ -1,0 +1,12 @@
+{
+  "name": "client",
+  "version": "0.0.1",
+  "maintainers": [
+    "Balebom <binhnguyen.balebom.dev@gmail.com>"
+  ],
+  "dependencies": [
+    "openssl",
+    "mosquitto",
+    "libmysql"
+  ]
+}

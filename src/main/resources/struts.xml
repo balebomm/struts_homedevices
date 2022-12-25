@@ -50,5 +50,17 @@
 			<result name="action-success">/WEB-INF/layouts/admin/thietbi/{1}.jsp</result>
 			<result name="action-list" type="redirect">thietbi-list</result>
 		</action>
+
+		<!-- DuLieuThietBiAction -->
+		<action name="dulieuthietbi-*" class="com.github.balebomm.struts_homedevice.Actions.DuLieuThietBiAction" method="{1}">
+			<interceptor-ref name="params"/>
+			<interceptor-ref name="roleBasedInterceptor">
+				<param name="allowedRoles">admin</param>
+			</interceptor-ref>
+
+			<result name="interceptor-fail">/WEB-INF/layouts/login.jsp</result>
+			<result name="action-success">/WEB-INF/layouts/admin/dulieuthietbi/{1}.jsp</result>
+			<result name="action-list" type="redirect">dulieuthietbi-list</result>
+		</action>
 	</package>
 </struts>

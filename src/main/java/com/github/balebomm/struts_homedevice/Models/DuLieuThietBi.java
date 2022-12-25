@@ -42,4 +42,11 @@ public class DuLieuThietBi {
     this.giatri = giatri;
     this.ngaytao = ngaytao;
   }
+
+  public DuLieuThietBi(int idthietbi, float giatri, String ngaytao) {
+    super();
+    this.idthietbi = idthietbi;
+    this.giatri = giatri;
+    this.ngaytao = ngaytao;
+  }
 }

@@ -12,7 +12,6 @@
 	<%@ include file="../../../components/library.jsp" %>
 </head>
 <body>
-	
 	<div class="my-3">
 		<%@ include file="../../../components/header.jsp" %>
 
@@ -27,6 +26,13 @@
 		<div class="my-3"></div>
 
 		<div class="container">
+			<s:if test="hasActionMessages()">
+				<div class="welcome">
+					<s:actionmessage/>
+				</div>
+				<br/>
+			</s:if>
+
 			<table class="table table-success table-striped">
 				<thead>
 					<tr>
@@ -40,19 +46,19 @@
 					<s:iterator var="thietbi" value="listthietbi">
 						<tr>
 							<td><s:property value="id"/></td>
-							<td>
-								<s:property value="tenthietbi"/>
-							</td>
+							<td><s:property value="tenthietbi"/></td>
 							<td>
 								<s:if test="%{#thietbi.trangthai == 'danghoatdong'}">
 									Đang hoạt động
 								</s:if>
 								<s:else>
-									Ngừng hoạt động
+									Tắt hoạt động
 								</s:else>
 							</td>
 							<td>
-								<a class="badge rounded-pill text-bg-warning text-decoration-none me-2" href="thietbi-edit">Sửa</a>
+								<a class="badge rounded-pill text-bg-warning text-decoration-none me-2" id="refDulieuthietbi" href='dulieuthietbi-list?idthietbi=<s:property value="id"/>'>Dữ liệu</a>
+								<a class="badge rounded-pill text-bg-warning text-decoration-none me-2" id="refSua" href='thietbi-edit?id=<s:property value="id"/>'>Sửa</a>
+								<a class="badge rounded-pill text-bg-danger text-decoration-none me-2" id="refXoa" href='thietbi-delete?id=<s:property value="id"/>'>Xóa</a>
 							</td>
 						</tr>
 					</s:iterator>
@@ -60,5 +66,14 @@
 			</table>
 		</div>
 	</div>
+
+	<script>
+		function main() {
+      var today = moment().format('YYYY-MM-DD');
+			document.getElementById("refDulieuthietbi").href += '&fromdate=' + today + '&todate=' + today;
+		}
+
+		main();
+	</script>
 </body>
 </html>

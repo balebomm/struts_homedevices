@@ -1,19 +1,23 @@
 package com.github.balebomm.struts_homedevice.Actions;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apache.struts2.interceptor.SessionAware;
 
 import com.github.balebomm.struts_homedevice.DAO.ThietBiDAO;
 import com.github.balebomm.struts_homedevice.Models.ThietBi;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class ThietBiAction extends ActionSupport implements SessionAware {
+public class ThietBiAction extends ActionSupport {
+  int id;
   String tenthietbi, trangthai;
-  Map<String, Object> session;
   List<ThietBi> listthietbi;
 
+  public int getId() {
+    return this.id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
 
   public String getTenthietbi() {
     return this.tenthietbi;
@@ -37,14 +41,6 @@ public class ThietBiAction extends ActionSupport implements SessionAware {
     this.listthietbi = listthietbi;
   }
 
-  public void setSession(Map<String, Object> session) {
-    this.session = session;
-  }
-
-  public Map<String, Object> getSession() {
-    return session;
-  }
-
   public String list() {
     this.listthietbi = new ThietBiDAO().list();
     return "action-success";
@@ -54,7 +50,7 @@ public class ThietBiAction extends ActionSupport implements SessionAware {
     boolean result = new ThietBiDAO().add(new ThietBi(tenthietbi, trangthai));
     if (result == false) {
       addActionMessage("Có lỗi xảy ra trong quá trình xử lý");
-      return "action-form";
+      return "action-create";
     }
 
     return "action-list";
@@ -65,6 +61,49 @@ public class ThietBiAction extends ActionSupport implements SessionAware {
   }
 
   public String edit() {
+    ThietBi thietbi = new ThietBiDAO().get(this.id);
+    if (thietbi == null) {
+      addActionMessage("Không tìm thấy dữ liệu");
+      return "action-create";
+    }
+
+    this.tenthietbi = thietbi.getTenthietbi();
+    this.trangthai = thietbi.getTrangthai();
+    
     return "action-success";
+  }
+
+  public String update() {
+    boolean ok = new ThietBiDAO().update(new ThietBi(this.id, this.tenthietbi, this.trangthai));
+    if (!ok) {
+      addActionMessage("Cập nhật dữ liệu thất bại");
+      return "action-create";
+    }
+
+    return "action-list";
+  }
+
+  public String delete() {
+    ThietBi thietbi = new ThietBiDAO().get(this.id);
+    if (thietbi == null) {
+      addActionMessage("Không tìm thấy dữ liệu");
+      return "action-list";
+    }
+
+    this.tenthietbi = thietbi.getTenthietbi();
+    this.trangthai = thietbi.getTrangthai();
+
+    return "action-success";
+  }
+
+  public String destroy() {
+    boolean ok = new ThietBiDAO().delete(this.id);
+    if (!ok) {
+      addActionMessage("Có lỗi khi thực hiện thao tác xóa");
+      return "action-list";
+    }
+
+    addActionMessage("Xóa thành công");
+    return "action-list";
   }
 }
